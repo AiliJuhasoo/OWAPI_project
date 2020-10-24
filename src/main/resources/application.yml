@@ -1,0 +1,24 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_null
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        temp:
+          use_jdbc_metadata_defaults : false
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:h2:file:~/data/weatherapp_database.mv.db;AUTO_SERVER=TRUE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+
+server:
+  servlet:
+    content-path: /api
+

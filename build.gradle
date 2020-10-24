@@ -1,0 +1,78 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.3.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+apply plugin: 'jacoco'
+
+group = 'ee.taltech'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+	runtimeOnly 'com.h2database:h2'
+	implementation 'org.apache.commons:commons-csv:1.8'
+
+	compileOnly 'org.projectlombok:lombok:1.18.12'
+	annotationProcessor 'org.projectlombok:lombok:1.18.12'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	compile 'io.springfox:springfox-boot-starter:3.0.0'
+	compile 'io.springfox:springfox-swagger2:3.0.0'
+	compile 'io.springfox:springfox-swagger-ui:3.0.0'
+
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+// Report after tests
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+	}
+}
+
+check.dependsOn(
+		test,
+		jacocoTestReport,
+		jacocoTestCoverageVerification
+)
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'BUNDLE'
+			limit {
+				counter = 'COMPLEXITY'
+				value = 'COVEREDRATIO'
+				minimum = 0.20
+			}
+		}
+	}
+}
+
+bootJar {
+	archiveFileName = 'weatherapp-backend.jar'
+}
